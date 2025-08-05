@@ -11,7 +11,7 @@ We provide the demo.py file which demonstrates how to use the 256 functions in D
 ```bash
 python demo.py
 ```
-For instructions on how to access specific functions within Diverse-BBO and construct custom datasets using Diverse-BBO, please carefully read the `demo.py` and the `Symbolic_bench_Dataset class` used in both `utils.py`.
+For instructions on how to access specific functions within Diverse-BBO and construct custom datasets using Diverse-BBO, please carefully read the `demo.py` and the `Symbolic_bench_Dataset class` used in `utils.py`.
 
 Additionally, for researchers interested in the specific mathematical formulations of function instances within Diverse-BBO, we provide complete mathematical expressions for all 256 function instances in `all_256_programs_expr.pdf`.
 
@@ -57,4 +57,5 @@ output
 |--test
    |--YYYYMMDDTHHmmSS_Benchmark_Dimension
       |---test.pkl
+
 ```
