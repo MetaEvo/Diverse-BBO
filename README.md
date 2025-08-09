@@ -1,5 +1,5 @@
 # Diverse-BBO
-The code and technical details of our method "Latent Space Reverse Engineering" (LSRE) for generating better MetaBBO training problem set (Diverse-BBO). For the 256 problem instances in Diverse-BBO, we provide their mathematical formulations in [thid pdf file](https://github.com/MetaEvo/Diverse-BBO/blob/main/all_256_programs_expr.pdf).
+The code and technical details of our method "Latent Space Reverse Engineering" (LSRE) for generating better MetaBBO training problem set (Diverse-BBO). For the 256 problem instances in Diverse-BBO, we provide their mathematical formulations in [this pdf file](https://github.com/MetaEvo/Diverse-BBO/blob/main/all_256_programs_expr.pdf).
 
 ## Requirements
 You can install all of dependencies of LSRE via the command below.
@@ -59,4 +59,5 @@ output
       |---test.pkl
 
 ```
+
 
