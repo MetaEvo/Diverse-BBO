@@ -10,7 +10,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler,MinMaxScaler,RobustScaler
 # from torch.utils.tensorboard import SummaryWriter
 from dataset.bbob import *
-from pflacco.sampling import create_initial_sample
+from pflacco_v1.sampling import create_initial_sample
 from ela_feature import get_ela_feature
 import pickle
 from utils import set_seed

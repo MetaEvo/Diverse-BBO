@@ -1097,20 +1097,6 @@ class _Program(object):
         # 问题的y值用于计算ela
         # 30D的原始计算
         y_pred = self.execute(X, random_state=random_state)
-        # 做缩减的ela计算:2,5,10D
-        # X_2D = np.array(create_initial_sample(2, n=250*2, sample_type='lhs', lower_bound=-5, upper_bound=5, seed=100))
-        # X_5D = np.array(create_initial_sample(5, n=250*5, sample_type='lhs', lower_bound=-5, upper_bound=5, seed=100))
-        # X_10D = np.array(create_initial_sample(10, n=250*10, sample_type='lhs', lower_bound=-5, upper_bound=5, seed=100))
-        # y_2D , y_5D , y_10D= self.execute(X_2D, random_state=random_state) ,  self.execute(X_5D, random_state=random_state)  , self.execute(X_10D, random_state=random_state)  
-        
-        # penalty = 1e2
-        # total_x = [X_2D,X_5D,X_10D,X]
-        # total_y = [y_2D,y_5D,y_10D,y_pred]
-        # total_fitness = np.full((4),penalty)
-        # not_cal_ela = np.zeros((4))
-        # gp_ela_pure_list = []
-        # coordi_2D_list = []
-        # dim_list = [2,5,10,30]
         
         self.coordi_2D = None
         X_2D = np.array(create_initial_sample(2, n=250*2, sample_type='lhs', lower_bound=-5, upper_bound=5, seed=100))
@@ -1143,8 +1129,6 @@ class _Program(object):
                         total_x[dim],total_y[dim],random_state = random_seed)
                     gp_ela_pure_list.append(gp_ela_pure)
                 except:
-                    # 计算ic的时候可能会有bug
-                    # 设置为无法计算
                     not_cal_ela[dim] = 1
                     gp_ela_pure_list.append(None)
                     continue

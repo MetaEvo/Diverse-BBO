@@ -90,7 +90,8 @@ def get_config(args=None):
 
 
 
-
+    # not actual used maxFEs
+    # maxFEs of per instance is set in optimizer 
     config.maxFEs = 2500
     # for bo, maxFEs is relatively smaller due to time limit
     config.bo_maxFEs = 10 * config.dim
@@ -102,18 +103,6 @@ def get_config(args=None):
     if config.mgd_test or config.mte_test:
         config.problem = config.problem_to
         config.difficulty = config.difficulty_to
-
-    if config.problem in ['protein', 'protein-torch']:
-        config.dim = 12
-        config.maxFEs = 1000
-        config.bo_maxFEs = 10
-        config.n_logpoint = 5
-    elif config.problem in ['UAV']:
-        config.dim = 10
-        config.maxFEs = 2500
-    elif config.problem in ['HPOB']:
-        config.maxFEs = 500
-
 
     config.run_time = f'{time.strftime("%Y%m%dT%H%M%S")}_{config.problem}_{config.difficulty}_{config.dim}D'
     config.test_log_dir = config.log_dir + '/test/' + config.run_time + '/'

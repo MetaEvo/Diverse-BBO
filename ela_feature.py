@@ -11,9 +11,6 @@ def get_ela_feature(problem, Xs, Ys,random_state):
     
     all_ela_keys = []
     
-    # 计算下列特征时 对Y进行归一化
-    # 为了解决problem.eval无法归一化
-    # 传入原始的Y来进行归一化操作
     # convexity features 4 features
     ela_conv_full_results = calculate_ela_conv(Xs, Ys, problem, ela_conv_nsample= 200,seed=random_state)
     total_calculation_fes += ela_conv_full_results['ela_conv.additional_function_eval']
@@ -32,8 +29,6 @@ def get_ela_feature(problem, Xs, Ys,random_state):
             # print("conv feature costs : ",ela_conv_full_results[k])
         
         
-    # 计算下列特征时 对Y进行归一化
-    # 对目标值进行归一化
     Ys = (Ys - Ys.min()) / (Ys.max() - Ys.min())
     
     # meta features 9 features
@@ -134,7 +129,6 @@ def get_ela_feature(problem, Xs, Ys,random_state):
         # else:
             # print("dist feature costs : ",ela_dis_full_results[k])
     # print(all_features)
-    # 去掉index为1 2 3 16 17的不稳定feature
     # all_features = [fea for j, fea in enumerate(all_features) if j not in [1,2,3,16,17]]
     return np.array(all_features), total_calculation_fes, total_calculation_time_cost
 

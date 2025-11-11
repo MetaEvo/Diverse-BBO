@@ -6,7 +6,7 @@ from gplearn_final_AE_ray_best_ela.genetic import SymbolicRegressor
 import os 
 import pickle
 import numpy as np
-from pflacco.sampling import create_initial_sample
+from pflacco_v1.sampling import create_initial_sample
 from net.AE import *
 from datetime import datetime
 import ray

@@ -2,8 +2,6 @@
 This file is used to train the agent.(for the kind of optimizer that is learnable)
 """
 import pickle
-from dataset.MABBOB import MABBOB_Dataset
-from dataset.GP_baseline import GP_baseline_Dataset
 from tqdm import tqdm
 from environment.basic_environment import PBO_Env
 from VectorEnv import *
@@ -15,7 +13,6 @@ import os
 import matplotlib
 import matplotlib.pyplot as plt
 from basic_agent.utils import save_class
-from problem import bbob,BBOB_Dataset
 from tensorboardX import SummaryWriter
 from optimizer import (
     DE_DDQN_Optimizer,
@@ -54,33 +51,6 @@ class Trainer(object):
         rng = np.random.default_rng(42)
         if config.problem == 'Diverse-BBO':
             self.train_set, self.test_set = construct_problem_set(config)
-        # elif config.problem == 'bbob':
-        #     train_len = len(train_set)
-        #     all_161_set = []
-        #     for i in range(1,8):
-        #         #7*24 = 168
-        #         all_set = bbob.BBOB_Dataset.get_datasets(suit=config.problem,
-        #                                       dim=config.dim,
-        #                                       upperbound=config.upperbound,
-        #                                       train_batch_size=config.train_batch_size,
-        #                                       test_batch_size=config.test_batch_size,
-        #                                       difficulty=config.difficulty,
-        #                                       instance_seed=i,
-        #                                       get_all=True)
-        #         all_161_set.extend(all_set)
-        #     train_idx = rng.choice(len(all_161_set), train_len, replace=False)
-        #     self.train_set = BBOB_Dataset([all_161_set[idx] for idx in train_idx ], config.train_batch_size)
-        # elif config.problem == 'MABBOB':
-        #     self.train_set = MABBOB_Dataset.get_datasets(upperbound=config.upperbound,
-        #                                       train_batch_size=config.train_batch_size,
-        #                                       test_batch_size=config.test_batch_size,
-        #                                       instance_seed=42,
-        #                                       train_test_split = 0.8)
-        # elif config.problem == 'GP-BBOB':
-        #     self.train_set = GP_baseline_Dataset.get_datasets(upperbound=config.upperbound,
-        #                                       train_batch_size=config.train_batch_size,
-        #                                       test_batch_size=config.test_batch_size,
-        #                                       instance_seed=42)
             
             
             
@@ -154,71 +124,6 @@ class Trainer(object):
         plt.savefig(log_dir+f'pic/return.png')
         plt.close()
 
-    # def train(self):
-    #     print(f'start training: {self.config.run_time}')
-    #     # agent_save_dir = self.config.agent_save_dir + self.agent.__class__.__name__ + '/' + self.config.run_time + '/'
-    #     exceed_max_ls = False
-    #     epoch = 0
-    #     cost_record = {}
-    #     normalizer_record = {}
-    #     return_record = []
-    #     learn_steps = []
-    #     epoch_steps = []
-    #     for problem in self.train_set:
-    #         for p in problem:
-    #             cost_record[p.__str__()] = []
-    #             normalizer_record[p.__str__()] = []
-
-    #     # todo Seed config
-    #     seed = 4
-    #     while not exceed_max_ls:
-    #         learn_step = 0
-    #         self.train_set.shuffle()
-    #         with tqdm(range(self.train_set.N), desc=f'Training {self.agent.__class__.__name__} Epoch {epoch}') as pbar:
-    #             for problem_id, problem in enumerate(self.train_set):
-
-    #                 # env = PBO_Env(problem, self.optimizer)
-    #                 env_list = [PBO_Env(p, copy.deepcopy(self.optimizer)) for p in problem]
-    #                 for env in env_list:
-    #                     env.optimizer.seed(seed)
-
-    #                 exceed_max_ls, pbar_info_train = self.agent.train_episode(envs = env_list)
-    #                 # exceed_max_ls, pbar_info_train = self.agent.train_episode(env)  # pbar_info -> dict
-    #                 postfix_str = (
-    #                     f"loss={pbar_info_train['loss']:.2e}, "
-    #                     f"learn_steps={pbar_info_train['learn_steps']}, "
-    #                     f"return={[f'{x:.2e}' for x in pbar_info_train['return']]}"
-    #                 )
-
-    #                 pbar.set_postfix_str(postfix_str)
-    #                 pbar.update(self.config.train_batch_size)
-    #                 learn_step = pbar_info_train['learn_steps']
-    #                 for id, p in enumerate(problem):
-    #                     name = p.__str__()
-    #                     cost_record[name].append(pbar_info_train['gbest'][id])
-    #                     normalizer_record[name].append(pbar_info_train['normalizer'][id])
-    #                     return_record.append(np.mean(pbar_info_train['return']))
-    #                 learn_steps.append(learn_step)
-    #                 if exceed_max_ls:
-    #                     break
-    #             self.agent.train_epoch()
-    #         epoch_steps.append(learn_step)
-    #         # if not os.path.exists(agent_save_dir):
-    #         #     os.makedirs(agent_save_dir)
-    #         # with open(agent_save_dir+'agent_epoch'+str(epoch)+'.pkl', 'wb') as f:
-    #         #     pickle.dump(self.agent, f, -1)
-
-    #         # todo add log logicality
-    #         # self.save_log(epoch_steps, learn_steps, cost_record, return_record, normalizer_record)
-    #         epoch += 1
-    #         # if epoch % self.config.draw_interval == 0:
-    #         #     self.draw_cost()
-    #         #     self.draw_average_cost()
-    #         #     self.draw_return()
-        
-    #     # self.draw_cost()
-    #     # self.draw_average_cost()
-    #     # self.draw_return()
 
     def train_new(self):
         print(f'start training: {self.config.run_time}')
@@ -236,14 +141,10 @@ class Trainer(object):
         learn_steps = []
         epoch_steps = []
 
-        # 这里先让train_set bs 一直为1先
         for problem in self.train_set.data:
             cost_record[problem.__str__()] = []
             normalizer_record[problem.__str__] = []
 
-        # 然后根据train_mode 决定 bs
-        # single ---> 从train_set 里取出 bs 个问题训练
-        # multi ---> 每次从train_set 中取出 1 个问题，copy bs 个 训练
         bs = self.config.train_batch_size
         if self.config.train_mode == "single":
             self.train_set.batch_size = 1
@@ -256,9 +157,7 @@ class Trainer(object):
 
         if self.config.problem == 'Diverse-BBO':
             episode_optimum = np.load('./optimum_dir/final_optimum.npy')
-        elif self.config.problem == 'GP-BBOB':
-            episode_optimum = np.load('./optimum_dir/baseline_final_optimum_new.npy')
-        
+
         
         while not is_end:
             learn_step = 0
@@ -268,7 +167,6 @@ class Trainer(object):
                     # set seed
                     seed_list = (epoch * epoch_seed + id_seed * (np.arange(bs) + bs * problem_id) + seed).tolist()
 
-                    # 这里前面已经判断好 train_mode，这里只需要根据 train_mode 构造env就行
                     if self.config.train_mode == "single":
                         env_list = [PBO_Env(copy.deepcopy(problem), copy.deepcopy(self.optimizer)) for _ in range(bs)] # bs
                     elif self.config.train_mode == "multi":
@@ -299,7 +197,7 @@ class Trainer(object):
                     #     normalizer_record[name].append(train_meta_data['normalizer'][id])
                     #     return_record.append(np.mean(train_meta_data['return']))
                     # learn_steps.append(learn_step)
-                    if self.config.problem in ['Diverse-BBO','GP-BBOB']: 
+                    if self.config.problem in ['Diverse-BBO']: 
                         for env in env_list:
                             if  env.problem.episode_optimum < env.problem.eval_optimum :
                                 episode_optimum[env.problem.problemID - 1] = env.problem.episode_optimum
@@ -328,50 +226,5 @@ class Trainer(object):
             if self.config.end_mode == "epoch" and epoch >= self.config.max_epoch:
                 is_end = True
 
-        
-
-# class Trainer_l2l(object):
-#     def __init__(self, config):
-#         self.config = config
-
-#         # two way 
-#         self.agent = eval(config.train_agent)(config)
-#         self.optimizer = eval(config.train_optimizer)(config)
-#         # need to be torch version
-#         self.train_set, self.test_set = construct_problem_set(config)
-
-
-#     def train(self):
-#         print(f'start training: {self.config.run_time}')
-#         agent_save_dir = self.config.agent_save_dir + self.agent.__class__.__name__ + '/' + self.config.run_time + '/'
-#         exceed_max_ls = False
-#         epoch = 0
-#         cost_record = {}
-#         normalizer_record = {}
-#         return_record = []
-#         learn_steps = []
-#         epoch_steps = []
-#         for problem in self.train_set:
-#             cost_record[problem.__str__()] = []
-#             normalizer_record[problem.__str__()] = []
-#         while not exceed_max_ls:
-#             learn_step = 0
-#             self.train_set.shuffle()
-#             with tqdm(range(self.train_set.N), desc=f'Training {self.agent.__class__.__name__} Epoch {epoch}') as pbar:
-#                 for problem_id, problem in enumerate(self.train_set):
-                    
-#                     env=PBO_Env(problem,self.optimizer)
-#                     exceed_max_ls= self.agent.train_episode(env)  # pbar_info -> dict
-                    
-#                     pbar.update(1)
-#                     name = problem.__str__()
-                    
-#                     learn_steps.append(learn_step)
-#                     if exceed_max_ls:
-#                         break
-#             epoch_steps.append(learn_step)
-            
-                    
-#             epoch += 1
             
         

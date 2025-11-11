@@ -86,7 +86,6 @@ class GLEET_Optimizer(Learnable_Optimizer):
     # the interface for environment reseting
     def init_population(self, problem):
         problem.dim = int(problem.dim)
-        # 根据problem来获取真正的维度
         self.dim = problem.dim
         # 根据问题来设定dim和maxFES
         self.__config.dim = problem.dim
